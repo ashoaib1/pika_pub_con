@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python -u
 
 import pika
 import logging
@@ -11,9 +11,9 @@ logging.basicConfig(level=logging.INFO)
 
 # Create connection and open channel
 credentials = pika.PlainCredentials(username='rmq_test', password='rmq_test')
-parameters =  pika.ConnectionParameters(host='rmqnode1', port=5672, virtual_host='/', credentials=credentials)
-#parameters =  pika.ConnectionParameters('rmqnode2', credentials=credentials)
-#parameters =  pika.ConnectionParameters('rmqnode3', credentials=credentials)
+rmq_node = 'rmqnode2'
+parameters =  pika.ConnectionParameters(host=rmq_node, port=5672, virtual_host='/', credentials=credentials)
+print "Trying to connect with RabbitMQ Node {}".format(rmq_node)
 connection = pika.BlockingConnection(parameters)
 channel = connection.channel()
 
