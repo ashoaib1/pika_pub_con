@@ -13,7 +13,7 @@ def process_message(channel, method_frame, header_frame, message):
 
 # Create connection and open channel
 credentials = pika.PlainCredentials(username='rmq_test', password='rmq_test')
-parameters =  pika.ConnectionParameters(host='192.168.101.3', port=5672, virtual_host='/', credentials=credentials)
+parameters =  pika.ConnectionParameters(host='rmqnode3', port=5672, virtual_host='/', credentials=credentials)
 connection = pika.BlockingConnection(parameters)
 channel = connection.channel()
 
