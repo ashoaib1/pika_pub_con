@@ -11,8 +11,9 @@ logging.basicConfig(level=logging.INFO)
 
 # Create connection and open channel
 credentials = pika.PlainCredentials(username='rmq_test', password='rmq_test')
-parameters =  pika.ConnectionParameters(host='192.168.101.3', port=5672, virtual_host='/', credentials=credentials)
-#parameters =  pika.ConnectionParameters('192.168.101.3', credentials=credentials) #rmqnode2
+parameters =  pika.ConnectionParameters(host='rmqnode1', port=5672, virtual_host='/', credentials=credentials)
+#parameters =  pika.ConnectionParameters('rmqnode2', credentials=credentials)
+#parameters =  pika.ConnectionParameters('rmqnode3', credentials=credentials)
 connection = pika.BlockingConnection(parameters)
 channel = connection.channel()
 
@@ -28,14 +29,17 @@ channel.queue_bind(queue=queue_name, exchange=exchange_name, routing_key=routing
 host = getfqdn()
 local_script = os.path.basename(__file__)
 pid = os.getpid()
+msg_num = 1
 try:
 	while(True):
-		message = "timestamp={}, host={}, script={}, pid={}".format(datetime.now(), host, local_script, pid)
+		message = "timestamp={}, msg_num={}, host={}, script={}, pid={}".format(datetime.now(), msg_num, host, local_script, pid)
 		print("Publishing on exchange {} with routing_key {}: message [{}]"
 			.format(exchange_name, routing_key, message))
 		channel.basic_publish(exchange_name, routing_key, message)
 		sleep(0.5)
+		msg_num = msg_num + 1
 except KeyboardInterrupt:
 	# Close connection and channel
+	print "Closing publisher cause received keyboardInterrupt"
 	connection.close()
 
